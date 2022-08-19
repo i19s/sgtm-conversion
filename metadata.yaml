@@ -3,4 +3,4 @@ documentation: "https://ingenioustechnologies.atlassian.net/wiki/spaces/KB/pages
 versions:
   # Latest version
   - sha: 8fb5c2f419cb9ab9700abf333cb6684e56cb795f
-    changeNotes: Initial Commit
+    changeNotes: "Initial Commit"

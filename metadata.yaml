@@ -8,3 +8,5 @@ versions:
     changeNotes: "Complete rewrite"
   - sha: 60f4deb7ec450f298174d6846e0b8b5e9139ac4c
     changeNotes: "Add header forwarding and basket processing"
+  - sha: 25b3ff92754d3924f86551ebd06d8ff3841fb186
+    changeNotes: "Fix the generation of the tracking URL"

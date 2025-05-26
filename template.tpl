@@ -37,6 +37,27 @@ ___TEMPLATE_PARAMETERS___
   },
   {
     "type": "GROUP",
+    "name": "tagConfiguration",
+    "displayName": "Tag Configuration",
+    "groupStyle": "ZIPPY_OPEN",
+    "subParams": [
+      {
+        "type": "TEXT",
+        "name": "advertiser_id",
+        "displayName": "Advertiser Id",
+        "simpleValueType": true,
+        "help": "You can find the advertiser ID on the platform under \"Partnerships -\u003e Advertiser -\u003e Settings\". Do not use the internal ID (mid).",
+        "valueHint": "i1234567",
+        "valueValidators": [
+          {
+            "type": "NON_EMPTY"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "type": "GROUP",
     "name": "conversionSettings",
     "displayName": "Conversion Settings",
     "groupStyle": "ZIPPY_OPEN_ON_PARAM",
@@ -241,6 +262,7 @@ ___TEMPLATE_PARAMETERS___
     ]
   }
 ]
+
 
 
 ___SANDBOXED_JS_FOR_SERVER___

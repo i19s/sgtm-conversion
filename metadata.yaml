@@ -10,3 +10,5 @@ versions:
     changeNotes: "Add header forwarding and basket processing"
   - sha: 25b3ff92754d3924f86551ebd06d8ff3841fb186
     changeNotes: "Fix the generation of the tracking URL"
+  - sha: a3401e97dfb769f5ceaa28238405df50d682ab14
+    changeNotes: "Add advertiserId field in tag template"

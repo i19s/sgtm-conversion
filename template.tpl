@@ -101,6 +101,14 @@ ___TEMPLATE_PARAMETERS___
         "simpleValueType": true,
         "valueHint": "basket",
         "help": "The tracking category e.g. \u0027default\u0027 or \u0027basket\u0027"
+      },
+      {
+        "type": "TEXT",
+        "name": "confirmation_status",
+        "displayName": "Confirmation Status",
+        "simpleValueType": true,
+        "valueHint": "1",
+        "help": "The status of the order confirmation (0 = pending, 1 = confirmed, 2 = cancelled)."
       }
     ]
   },
@@ -133,6 +141,22 @@ ___TEMPLATE_PARAMETERS___
         "simpleValueType": true,
         "valueHint": "[{   \"id\": 1   \"trc\": \"default\",   \"pid\": \"test_cbj/h\",   \"sku\": \"test_0-1234-567-89\",   \"prn\" +: \"test_Product\",   \"brn\": \"test_Brand\",   \"prc\": \"test.try.success\",   \"pri\": 173.66,   \"qty\": 3,   \"dsv\": 52.10,   \"shp\": 5.56,   \"tax\": 98.99, }]",
         "help": "The contents of the shopping cart consist of items containing the following values in JSON format"
+      },
+      {
+        "type": "TEXT",
+        "name": "order_value",
+        "displayName": "Order Value",
+        "simpleValueType": true,
+        "valueHint": "199.99",
+        "help": "The total value of the order."
+      },
+      {
+        "type": "TEXT",
+        "name": "invoice_value",
+        "displayName": "Invoice Value",
+        "simpleValueType": true,
+        "valueHint": "199.99",
+        "help": "The total invoice value, which may differ from the order value."
       }
     ]
   },
@@ -205,6 +229,38 @@ ___TEMPLATE_PARAMETERS___
         "simpleValueType": true,
         "valueHint": "email.testnet.1234.56789.012345",
         "help": "The amc parameter is the ad media code, used to identify traffic."
+      },
+      {
+        "type": "TEXT",
+        "name": "request_timestamp",
+        "displayName": "Request Timestamp",
+        "simpleValueType": true,
+        "valueHint": "2023-01-01T12:00:00Z",
+        "help": "The timestamp of the request in ISO 8601 format."
+      },
+      {
+        "type": "TEXT",
+        "name": "subtag",
+        "displayName": "Subtag",
+        "simpleValueType": true,
+        "valueHint": "promo_summer",
+        "help": "A subtag for more granular tracking."
+      },
+      {
+        "type": "TEXT",
+        "name": "adspace",
+        "displayName": "Adspace",
+        "simpleValueType": true,
+        "valueHint": "homepage_banner",
+        "help": "The advertising space where the ad was displayed."
+      },
+      {
+        "type": "TEXT",
+        "name": "device_type",
+        "displayName": "Device Type",
+        "simpleValueType": true,
+        "valueHint": "mobile",
+        "help": "The type of device used by the user (e.g., desktop, mobile, tablet)."
       }
     ]
   },
@@ -258,6 +314,45 @@ ___TEMPLATE_PARAMETERS___
         "displayName": "User Value 3",
         "simpleValueType": true,
         "help": "These fields are for free additional information. All formats are accepted."
+      },
+      {
+        "type": "TEXT",
+        "name": "user_value_4",
+        "displayName": "User Value 4",
+        "simpleValueType": true,
+        "help": "These fields are for free additional information. All formats are accepted."
+      },
+      {
+        "type": "TEXT",
+        "name": "customer_gender",
+        "displayName": "Customer Gender",
+        "simpleValueType": true,
+        "valueHint": "male",
+        "help": "The gender of the customer (e.g., male, female, other)."
+      },
+      {
+        "type": "TEXT",
+        "name": "customer_age",
+        "displayName": "Customer Age",
+        "simpleValueType": true,
+        "valueHint": "30",
+        "help": "The age of the customer."
+      },
+      {
+        "type": "TEXT",
+        "name": "customer_survey",
+        "displayName": "Customer Survey",
+        "simpleValueType": true,
+        "valueHint": "{\"question1\":\"answer1\",\"question2\":\"answer2\"}",
+        "help": "JSON-formatted customer survey responses."
+      },
+      {
+        "type": "TEXT",
+        "name": "additional_data",
+        "displayName": "Additional Data",
+        "simpleValueType": true,
+        "valueHint": "{\"key1\":\"value1\",\"key2\":\"value2\"}",
+        "help": "Additional JSON-formatted data for custom tracking needs."
       }
     ]
   }
@@ -270,80 +365,125 @@ ___SANDBOXED_JS_FOR_SERVER___
 (function () {
     'use strict';
 
-    var TrackingUrlType;
-    (function (TrackingUrlType) {
-        TrackingUrlType["click"] = "click";
-        TrackingUrlType["conversion"] = "conversion";
-        TrackingUrlType["view"] = "view";
-        TrackingUrlType["unknown"] = "unknown";
-    })(TrackingUrlType || (TrackingUrlType = {}));
+    var TrackingUrlType = {
+        click: 'click',
+        conversion: 'conversion',
+        view: 'view',
+        unknown: 'unknown'
+    };
 
-    var QueryParameter;
-    (function (QueryParameter) {
-        QueryParameter["REDIRECT_MODE"] = "rmd";
-        QueryParameter["PRODUCT_ID"] = "productId";
-        QueryParameter["CUSTOMER_ID"] = "csi";
-        QueryParameter["GDPR"] = "gdpr";
-        QueryParameter["GDPR_CONSENT"] = "gdpr_consent";
-        QueryParameter["HTTP_LOCATION"] = "hrf";
-        QueryParameter["HTTP_REFERRER"] = "rrf";
-        QueryParameter["SESSION_ID"] = "session";
-        QueryParameter["SITE_ID"] = "sid";
-        QueryParameter["TIMESTAMP"] = "tst";
-        QueryParameter["USER_AGENT"] = "user_agent";
-        QueryParameter["USER_VALUE_1"] = "uv1";
-        QueryParameter["USER_VALUE_2"] = "uv2";
-        QueryParameter["USER_VALUE_3"] = "uv3";
-        QueryParameter["VERSION"] = "ver";
-        QueryParameter["CLICK_IDS"] = "iclid";
-        QueryParameter["CLICK_COOKIE"] = "tsc";
-        QueryParameter["VIEW_COOKIE"] = "tsv";
-        QueryParameter["UNIQUE_ID"] = "uniqid";
-        QueryParameter["TRACKING_CURRENCY"] = "orc";
-        QueryParameter["PAY_METHOD"] = "pmt";
-        QueryParameter["DISCOUNT_VALUE"] = "dsv";
-        QueryParameter["DISCOUNT_CODE"] = "dsc";
-        QueryParameter["CUSTOMER_NEW"] = "csn";
-        QueryParameter["CONVERSION_TARGET"] = "ctg";
-        QueryParameter["CONVERSION_ID"] = "cid";
-        QueryParameter["BASKET"] = "bsk";
-        QueryParameter["CONVERSION_RESPONSE_TYPE"] = "typ";
-        QueryParameter["TRACKING_CATEGORY"] = "trc";
-        QueryParameter["IP_ADDRESS"] = "ip_address";
-        QueryParameter["ADMEDIA_CODE"] = "amc";
-    })(QueryParameter || (QueryParameter = {}));
+    var QueryParameter = {
+        REDIRECT_MODE: 'rmd',
+        PRODUCT_ID: 'productId',
+        CUSTOMER_ID: 'csi',
+        GDPR: 'gdpr',
+        GDPR_CONSENT: 'gdpr_consent',
+        HTTP_LOCATION: 'hrf',
+        HTTP_REFERRER: 'rrf',
+        SESSION_ID: 'session',
+        SITE_ID: 'sid',
+        TIMESTAMP: 'tst',
+        USER_AGENT: 'user_agent',
+        USER_VALUE_1: 'uv1',
+        USER_VALUE_2: 'uv2',
+        USER_VALUE_3: 'uv3',
+        USER_VALUE_4: 'uv4',
+        VERSION: 'ver',
+        CLICK_IDS: 'iclid',
+        CLICK_COOKIE: 'tsc',
+        VIEW_COOKIE: 'tsv',
+        UNIQUE_ID: 'uniqid',
+        TRACKING_CURRENCY: 'orc',
+        PAY_METHOD: 'pmt',
+        DISCOUNT_VALUE: 'dsv',
+        DISCOUNT_CODE: 'dsc',
+        CUSTOMER_NEW: 'csn',
+        CONVERSION_TARGET: 'ctg',
+        CONVERSION_ID: 'cid',
+        BASKET: 'bsk',
+        CONVERSION_RESPONSE_TYPE: 'typ',
+        TRACKING_CATEGORY: 'trc',
+        IP_ADDRESS: 'ip_address',
+        ADMEDIA_CODE: 'amc',
+        ORDER_VALUE: 'orv',
+        INVOICE_VALUE: 'inv',
+        CONFIRMATION_STATUS: 'cfs',
+        REQUEST_TIMESTAMP: 'rst',
+        CUSTOMER_GENDER: 'csg',
+        CUSTOMER_AGE: 'csa',
+        CUSTOMER_SURVEY: 'csr',
+        ADDITIONAL_DATA: 'adt',
+        SUBTAG: 'smc',
+        ADSPACE: 'adspace',
+        DEVICE_TYPE: 'device_type'
+    };
 
-    var EventType;
-    (function (EventType) {
-        EventType["I19S_VIEW"] = "i19s_view";
-        EventType["I19S_CLICK"] = "i19s_click";
-        EventType["I19S_CONVERSION"] = "i19s_conversion";
-        EventType["I19S_UNKNOWN"] = "i19s_unknown";
-    })(EventType || (EventType = {}));
+    var EventType = {
+        I19S_VIEW: 'i19s_view',
+        I19S_CLICK: 'i19s_click',
+        I19S_CONVERSION: 'i19s_conversion',
+        I19S_UNKNOWN: 'i19s_unknown'
+    };
 
-    var CookieName;
-    (function (CookieName) {
-        CookieName["CLICK_COOKIE"] = "tsc";
-        CookieName["VIEW_COOKIE"] = "tsv";
-        CookieName["ICLID_COOKIE"] = "_iclid";
-    })(CookieName || (CookieName = {}));
+    var CookieName = {
+        CLICK_COOKIE: 'tsc',
+        VIEW_COOKIE: 'tsv',
+        ICLID_COOKIE: '_iclid'
+    };
 
-    var BasketParam;
-    (function (BasketParam) {
-        BasketParam["POSITION_ORDER_NUMBER"] = "id";
-        BasketParam["POSITION_UUID"] = "uuid";
-        BasketParam["PRODUCT_ID"] = "pid";
-        BasketParam["NAME"] = "prn";
-        BasketParam["STOCK_KEEPING_UNIT"] = "sku";
-        BasketParam["PRODUCT_PRICE"] = "pri";
-        BasketParam["BRAND_NAME"] = "brn";
-        BasketParam["QUANTITY"] = "qty";
-        BasketParam["DISCOUNT_VALUE"] = "dsv";
-        BasketParam["SHIPPING_COSTS"] = "shp";
-        BasketParam["TAX"] = "tax";
-        BasketParam["TRACKING_CATEGORY"] = "trc";
-        BasketParam["PRODUCT_CATEGORY"] = "prc";
-    })(BasketParam || (BasketParam = {}));
+    var BasketParam = {
+        POSITION_ORDER_NUMBER: 'id',
+        POSITION_UUID: 'uuid',
+        PRODUCT_ID: 'pid',
+        NAME: 'prn',
+        STOCK_KEEPING_UNIT: 'sku',
+        PRODUCT_PRICE: 'pri',
+        BRAND_NAME: 'brn',
+        QUANTITY: 'qty',
+        DISCOUNT_VALUE: 'dsv',
+        SHIPPING_COSTS: 'shp',
+        TAX: 'tax',
+        TRACKING_CATEGORY: 'trc',
+        PRODUCT_CATEGORY: 'prc'
+    };
+    function isShortFormatEntry(entry) {
+        return entry && typeof entry === 'object' && (entry.id !== undefined || entry.pid !== undefined || entry.prn !== undefined || entry.sku !== undefined ||
+            entry.pri !== undefined || entry.brn !== undefined || entry.qty !== undefined || entry.dsv !== undefined ||
+            entry.shp !== undefined || entry.trc !== undefined || entry.prc !== undefined);
+    }
+    function shortToLongFormat(entry) {
+        if (!entry || typeof entry !== 'object') {
+            return {};
+        }
+        if (!isShortFormatEntry(entry)) {
+            return entry;
+        }
+        return {
+            position_order_number: entry.id || '',
+            position_uuid: entry.uuid || '',
+            product_id: entry.pid || '',
+            name: entry.prn || '',
+            stock_keeping_unit: entry.sku || '',
+            product_price: entry.pri || '',
+            brand_name: entry.brn || '',
+            quantity: entry.qty || '',
+            discount_value: entry.dsv || '',
+            shipping_costs: entry.shp || '',
+            tax: entry.tax || '',
+            tracking_category: entry.trc || '',
+            product_category: entry.prc || ''
+        };
+    }
+    function convertBasketFormat(basket) {
+        if (!basket || typeof basket !== 'object' || typeof basket.length !== 'number' || basket.length === 0) {
+            return [];
+        }
+        var firstItem = basket[0];
+        if (!isShortFormatEntry(firstItem)) {
+            return basket;
+        }
+        return basket.map(shortToLongFormat);
+    }
     function encodeBasket(logToConsole, encodeUriComponent, json, basket) {
         if (basket.length === 0) {
             logToConsole('Empty basket!');
@@ -352,19 +492,19 @@ ___SANDBOXED_JS_FOR_SERVER___
         var basketParamArray = basket.map(function (entry) {
             var _a;
             return (_a = {},
-                _a[BasketParam.POSITION_ORDER_NUMBER] = entry.position_order_number || '',
-                _a[BasketParam.POSITION_UUID] = entry.position_uuid || '',
-                _a[BasketParam.PRODUCT_ID] = entry.product_id || '',
-                _a[BasketParam.NAME] = entry.name || '',
-                _a[BasketParam.STOCK_KEEPING_UNIT] = entry.stock_keeping_unit || '',
-                _a[BasketParam.PRODUCT_PRICE] = entry.product_price || '',
-                _a[BasketParam.BRAND_NAME] = entry.brand_name || '',
-                _a[BasketParam.QUANTITY] = entry.quantity || '',
-                _a[BasketParam.DISCOUNT_VALUE] = entry.discount_value || '',
-                _a[BasketParam.SHIPPING_COSTS] = entry.shipping_costs || '',
+                _a[BasketParam.POSITION_ORDER_NUMBER] = entry.position_order_number || entry.id || '',
+                _a[BasketParam.POSITION_UUID] = entry.position_uuid || entry.uuid || '',
+                _a[BasketParam.PRODUCT_ID] = entry.product_id || entry.pid || '',
+                _a[BasketParam.NAME] = entry.name || entry.prn || '',
+                _a[BasketParam.STOCK_KEEPING_UNIT] = entry.stock_keeping_unit || entry.sku || '',
+                _a[BasketParam.PRODUCT_PRICE] = entry.product_price || entry.pri || '',
+                _a[BasketParam.BRAND_NAME] = entry.brand_name || entry.brn || '',
+                _a[BasketParam.QUANTITY] = entry.quantity || entry.qty || '',
+                _a[BasketParam.DISCOUNT_VALUE] = entry.discount_value || entry.dsv || '',
+                _a[BasketParam.SHIPPING_COSTS] = entry.shipping_costs || entry.shp || '',
                 _a[BasketParam.TAX] = entry.tax || '',
-                _a[BasketParam.TRACKING_CATEGORY] = entry.tracking_category || '',
-                _a[BasketParam.PRODUCT_CATEGORY] = entry.product_category || '',
+                _a[BasketParam.TRACKING_CATEGORY] = entry.tracking_category || entry.trc || '',
+                _a[BasketParam.PRODUCT_CATEGORY] = entry.product_category || entry.prc || '',
                 _a);
         });
         return encodeUriComponent(json.stringify(basketParamArray));
@@ -389,11 +529,11 @@ ___SANDBOXED_JS_FOR_SERVER___
         var eventData = getEventData(variable);
         if (tagValue) {
             logToConsole("init ".concat(variable, " with: ").concat(tagValue));
-            return tagValue;
+            return convertBasketFormat(tagValue);
         }
         else if (eventData) {
             logToConsole("init ".concat(variable, " with: ").concat(eventData));
-            return eventData;
+            return convertBasketFormat(eventData);
         }
         else {
             logToConsole("init ".concat(variable, " with default"));
@@ -417,7 +557,7 @@ ___SANDBOXED_JS_FOR_SERVER___
     var getTimestampMillis = require('getTimestampMillis');
 
     var DEFAULT_TRACKING_HOST = 'proxy.ingenious.cloud';
-    var TAG_VERSION = '47e8f98d2f66a2b11b249dc01f126382fb76f545';
+    var TAG_VERSION = '831fff1608a6046f36ee7ee1549b608b5463ddb6';
 
     function generateTrackingUrl(encodeUriComponent, logToConsole, json, config) {
         logConfig(logToConsole, json, config);
@@ -713,7 +853,19 @@ ___SANDBOXED_JS_FOR_SERVER___
         user_value_1: initVariableFromTagOrEvent(logToConsole, getEventData, 'user_value_1') || '',
         user_value_2: initVariableFromTagOrEvent(logToConsole, getEventData, 'user_value_2') || '',
         user_value_3: initVariableFromTagOrEvent(logToConsole, getEventData, 'user_value_3') || '',
+        user_value_4: initVariableFromTagOrEvent(logToConsole, getEventData, 'user_value_4') || '',
         admedia_code: initVariableFromTagOrEvent(logToConsole, getEventData, 'admedia_code') || '',
+        order_value: initVariableFromTagOrEvent(logToConsole, getEventData, 'order_value') || '',
+        invoice_value: initVariableFromTagOrEvent(logToConsole, getEventData, 'invoice_value') || '',
+        confirmation_status: initVariableFromTagOrEvent(logToConsole, getEventData, 'confirmation_status') || '',
+        request_timestamp: initVariableFromTagOrEvent(logToConsole, getEventData, 'request_timestamp') || '',
+        customer_gender: initVariableFromTagOrEvent(logToConsole, getEventData, 'customer_gender') || '',
+        customer_age: initVariableFromTagOrEvent(logToConsole, getEventData, 'customer_age') || '',
+        customer_survey: initVariableFromTagOrEvent(logToConsole, getEventData, 'customer_survey') || '',
+        additional_data: initVariableFromTagOrEvent(logToConsole, getEventData, 'additional_data') || '',
+        subtag: initVariableFromTagOrEvent(logToConsole, getEventData, 'subtag') || '',
+        adspace: initVariableFromTagOrEvent(logToConsole, getEventData, 'adspace') || '',
+        device_type: initVariableFromTagOrEvent(logToConsole, getEventData, 'device_type') || '',
         version: TAG_VERSION
     };
     var url = generateTrackingUrl(encodeUriComponent, logToConsole, json, urlData);

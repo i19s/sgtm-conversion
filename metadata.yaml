@@ -14,3 +14,5 @@ versions:
     changeNotes: "Add advertiserId field in tag template"
   - sha: 36dae0fd4a30d8cdde499562f50e2fe1cf96ab20
     changeNotes: "Adds new tracking parameters and basket conversion"
+  - sha: b5a11b8eafb0c9a1542e9aec1bfa779875901f1e
+    changeNotes: "Updates tag version and parameter order"
